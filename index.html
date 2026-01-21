@@ -16,16 +16,18 @@
             background: linear-gradient(135deg, #0f0f1e 0%, #1a1a2e 100%);
             min-height: 100vh;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             padding: 20px;
             color: #e8e8e8;
         }
         
-        .book-wrapper {
+        .book-viewport {
             width: 100%;
             max-width: 1400px;
             margin: 0 auto;
+            perspective: 1200px;
         }
         
         .book {
@@ -35,9 +37,10 @@
             background: #0f0f1e;
             border-radius: 20px;
             overflow: hidden;
-            box-shadow: 0 50px 150px rgba(0, 0, 0, 0.9), 
-                        inset 0 1px 0 rgba(255, 255, 255, 0.05),
-                        0 0 100px rgba(102, 126, 234, 0.1);
+            box-shadow: 
+                0 50px 150px rgba(0, 0, 0, 0.9),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05),
+                0 0 100px rgba(102, 126, 234, 0.1);
             min-height: 750px;
             position: relative;
             border: 1px solid rgba(102, 126, 234, 0.1);
@@ -48,25 +51,42 @@
             left: 50%;
             top: 0;
             bottom: 0;
-            width: 2px;
-            background: linear-gradient(to bottom, rgba(102, 126, 234, 0.3), rgba(102, 126, 234, 0.1), rgba(102, 126, 234, 0.3));
+            width: 3px;
+            background: linear-gradient(to bottom, rgba(102, 126, 234, 0.4), rgba(102, 126, 234, 0.1), rgba(102, 126, 234, 0.4));
             z-index: 10;
+            box-shadow: -2px 0 10px rgba(102, 126, 234, 0.2), 2px 0 10px rgba(102, 126, 234, 0.2);
         }
         
-        .left-page, .right-page {
+        .page {
             padding: 70px 55px;
-            display: flex;
+            display: none;
             flex-direction: column;
             position: relative;
             overflow-y: auto;
             max-height: 100vh;
+            animation: pageFlip 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
         }
         
-        .left-page {
+        .page.active {
+            display: flex;
+        }
+        
+        @keyframes pageFlip {
+            0% {
+                opacity: 0;
+                transform: rotateY(90deg);
+            }
+            100% {
+                opacity: 1;
+                transform: rotateY(0deg);
+            }
+        }
+        
+        .page.left {
             background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
         }
         
-        .right-page {
+        .page.right {
             background: linear-gradient(135deg, #16213e 0%, #0f3460 100%);
         }
         
@@ -87,11 +107,11 @@
             font-weight: 500;
         }
         
-        .left-page .page-number {
+        .page.left .page-number {
             left: 55px;
         }
         
-        .right-page .page-number {
+        .page.right .page-number {
             right: 55px;
         }
         
@@ -234,6 +254,7 @@
             min-height: 600px;
             position: relative;
             overflow: hidden;
+            animation: none;
         }
         
         .cover-page::before {
@@ -285,50 +306,6 @@
             color: rgba(255, 255, 255, 0.6);
             font-size: 0.9em;
             letter-spacing: 1px;
-        }
-        
-        .nav-controls {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 20px;
-            z-index: 100;
-            align-items: center;
-        }
-        
-        .nav-btn {
-            padding: 12px 28px;
-            background: rgba(102, 126, 234, 0.2);
-            border: 2px solid rgba(102, 126, 234, 0.4);
-            color: #667eea;
-            font-weight: 700;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 0.95em;
-            letter-spacing: 0.5px;
-        }
-        
-        .nav-btn:hover:not(:disabled) {
-            background: rgba(102, 126, 234, 0.3);
-            border-color: #667eea;
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.2);
-        }
-        
-        .nav-btn:disabled {
-            opacity: 0.3;
-            cursor: not-allowed;
-        }
-        
-        .page-counter {
-            color: rgba(232, 232, 232, 0.6);
-            font-size: 0.9em;
-            font-weight: 500;
-            min-width: 60px;
-            text-align: center;
         }
         
         .page-scroll {
@@ -402,6 +379,48 @@
             border-color: #667eea;
         }
         
+        .controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            margin-top: 40px;
+        }
+        
+        .nav-btn {
+            padding: 12px 28px;
+            background: rgba(102, 126, 234, 0.2);
+            border: 2px solid rgba(102, 126, 234, 0.4);
+            color: #667eea;
+            font-weight: 700;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.95em;
+            letter-spacing: 0.5px;
+        }
+        
+        .nav-btn:hover:not(:disabled) {
+            background: rgba(102, 126, 234, 0.3);
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.2);
+        }
+        
+        .nav-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+        
+        .page-counter {
+            color: rgba(232, 232, 232, 0.6);
+            font-size: 0.95em;
+            font-weight: 500;
+            min-width: 70px;
+            text-align: center;
+            letter-spacing: 0.5px;
+        }
+        
         @media (max-width: 1024px) {
             .book {
                 grid-template-columns: 1fr;
@@ -412,7 +431,7 @@
                 display: none;
             }
             
-            .left-page, .right-page {
+            .page {
                 border: none;
                 padding: 50px 35px;
                 max-height: none;
@@ -429,11 +448,16 @@
             .cover-page h1 {
                 font-size: 2.8em;
             }
+            
+            .controls {
+                flex-wrap: wrap;
+                gap: 20px;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="book-wrapper">
+    <div class="book-viewport">
         <div class="book" id="bookContainer">
             <!-- COVER PAGE -->
             <div class="cover-page" id="coverPage">
@@ -445,8 +469,8 @@
                 <div class="page-indicator">A Response to the Contradictions of Our Moment</div>
             </div>
             
-            <!-- PAGE 1: ESSAY (LEFT) -->
-            <div class="left-page page-scroll" id="page1">
+            <!-- PAGE 1 LEFT: ESSAY START -->
+            <div class="page left page-scroll" id="page1L">
                 <div class="page-header">Chapter One</div>
                 <h2>The System in Superposition</h2>
                 <p>We exist within a social system in genuine <span class="concept-link" onclick="jumpTo('superposition')">superposition</span>—simultaneously capable of two mutually exclusive trajectories: hyper-individualism leading to atomization and collapse, or collective reorientation toward systemic solutions.</p>
@@ -458,39 +482,39 @@
                 <div class="page-number">4</div>
             </div>
             
-            <!-- PAGE 2: INDEX (RIGHT) -->
-            <div class="right-page page-scroll" id="page2">
+            <!-- PAGE 1 RIGHT: TABLE OF CONTENTS -->
+            <div class="page right page-scroll" id="page1R">
                 <div class="page-header">Table of Contents</div>
                 <h2>Navigation</h2>
                 
                 <div class="index-section">
                     <div class="section-title">Main Essay</div>
                     <div class="index-item">
-                        <span class="index-link" onclick="jumpTo('page1')">The System in Superposition</span>
+                        <span class="index-link" onclick="jumpTo('page1L')">The System in Superposition</span>
                         <span class="index-page">4</span>
                     </div>
                     <div class="index-item">
-                        <span class="index-link" onclick="jumpTo('page3')">Observation as Collapse</span>
+                        <span class="index-link" onclick="jumpTo('page2L')">Observation as Collapse</span>
                         <span class="index-page">6</span>
                     </div>
                     <div class="index-item">
-                        <span class="index-link" onclick="jumpTo('page5')">The Dialectical Movement</span>
+                        <span class="index-link" onclick="jumpTo('page3L')">The Dialectical Movement</span>
                         <span class="index-page">8</span>
                     </div>
                     <div class="index-item">
-                        <span class="index-link" onclick="jumpTo('page7')">Synthesis: Transcendence</span>
+                        <span class="index-link" onclick="jumpTo('page4L')">Synthesis: Transcendence</span>
                         <span class="index-page">10</span>
                     </div>
                     <div class="index-item">
-                        <span class="index-link" onclick="jumpTo('page9')">Phase Transition as Process</span>
+                        <span class="index-link" onclick="jumpTo('page5L')">Phase Transition as Process</span>
                         <span class="index-page">12</span>
                     </div>
                     <div class="index-item">
-                        <span class="index-link" onclick="jumpTo('page11')">Language & Obligation</span>
+                        <span class="index-link" onclick="jumpTo('page6L')">Language & Obligation</span>
                         <span class="index-page">14</span>
                     </div>
                     <div class="index-item">
-                        <span class="index-link" onclick="jumpTo('page13')">The Final Synthesis</span>
+                        <span class="index-link" onclick="jumpTo('page7L')">The Final Synthesis</span>
                         <span class="index-page">16</span>
                     </div>
                 </div>
@@ -500,15 +524,15 @@
                 <div class="index-section">
                     <div class="section-title">Reference Material</div>
                     <div class="index-item">
-                        <span class="index-link" onclick="jumpTo('page15')">Hegelian Concepts</span>
+                        <span class="index-link" onclick="jumpTo('page8L')">Hegelian Concepts</span>
                         <span class="index-page">18</span>
                     </div>
                     <div class="index-item">
-                        <span class="index-link" onclick="jumpTo('page17')">Physics Foundations</span>
+                        <span class="index-link" onclick="jumpTo('page9L')">Physics Foundations</span>
                         <span class="index-page">20</span>
                     </div>
                     <div class="index-item">
-                        <span class="index-link" onclick="jumpTo('page19')">Sources & Primary Texts</span>
+                        <span class="index-link" onclick="jumpTo('page10L')">Sources</span>
                         <span class="index-page">22</span>
                     </div>
                 </div>
@@ -516,8 +540,8 @@
                 <div class="page-number">5</div>
             </div>
             
-            <!-- PAGE 3: ESSAY CONTINUED (LEFT) -->
-            <div class="left-page page-scroll" id="page3">
+            <!-- PAGE 2 LEFT: OBSERVATION -->
+            <div class="page left page-scroll" id="page2L">
                 <h2>Observation as Collapse</h2>
                 <p>In quantum mechanics, <span class="concept-link" onclick="jumpTo('observation')">observation</span> collapses superposition into definite state. In social systems, observation functions analogously:</p>
                 <div class="highlight-box">
@@ -529,16 +553,16 @@
                 <div class="page-number">6</div>
             </div>
             
-            <!-- PAGE 4: BLANK (RIGHT) -->
-            <div class="right-page page-scroll" id="page4">
+            <!-- PAGE 2 RIGHT: NOTES -->
+            <div class="page right page-scroll" id="page2R">
                 <div class="page-header">Notes</div>
                 <h2>Reflection Space</h2>
                 <p style="color: rgba(232, 232, 232, 0.3); margin-top: 50px; text-align: center;">Use this space for your own observations and connections</p>
                 <div class="page-number">7</div>
             </div>
             
-            <!-- PAGE 5: ESSAY CONTINUED (LEFT) -->
-            <div class="left-page page-scroll" id="page5">
+            <!-- PAGE 3 LEFT: DIALECTICS -->
+            <div class="page left page-scroll" id="page3L">
                 <h2>The Dialectical Movement</h2>
                 <div class="highlight-box">
                     <p><strong><span class="concept-link" onclick="jumpTo('thesis')">Thesis</span>:</strong> Hyper-individualism. The belief that individual choice, optimization, and survival strategy is the primary unit of social organization.</p>
@@ -548,8 +572,8 @@
                 <div class="page-number">8</div>
             </div>
             
-            <!-- PAGE 6: ESSAY CONTINUED (RIGHT) -->
-            <div class="right-page page-scroll" id="page6">
+            <!-- PAGE 3 RIGHT: SYNTHESIS -->
+            <div class="page right page-scroll" id="page3R">
                 <h2>Synthesis: Transcendence</h2>
                 <p><strong><span class="concept-link" onclick="jumpTo('synthesis')">Synthesis</span>:</strong> Not a middle ground. Synthesis dissolves the false binary by revealing what was incomplete in both frames. The synthesis preserves and elevates (aufheben) both positions within a higher order.</p>
                 <p>The synthesis recognizes that:</p>
@@ -562,8 +586,8 @@
                 <div class="page-number">9</div>
             </div>
             
-            <!-- PAGE 7: ESSAY CONTINUED (LEFT) -->
-            <div class="left-page page-scroll" id="page7">
+            <!-- PAGE 4 LEFT: PHASE TRANSITION -->
+            <div class="page left page-scroll" id="page4L">
                 <h2>The Phase Transition as Temporal Process</h2>
                 <p>This is not recursive infinity. It is temporal and directional. Each moment of collective articulation changes what becomes possible next.</p>
                 <p>The observation does not loop back on itself; it propagates forward. We are not trapped in superposition; we are approaching the boundary where the <span class="concept-link" onclick="jumpTo('phase-transition')">phase change</span> becomes irreversible.</p>
@@ -573,8 +597,8 @@
                 <div class="page-number">10</div>
             </div>
             
-            <!-- PAGE 8: ESSAY CONTINUED (RIGHT) -->
-            <div class="right-page page-scroll" id="page8">
+            <!-- PAGE 4 RIGHT: LANGUAGE -->
+            <div class="page right page-scroll" id="page4R">
                 <h2>Language as Catalyst</h2>
                 <p>The catalyst for phase transition is not comprehensive understanding. It is <strong>honest articulation of what we actually see, even incompletely.</strong></p>
                 <p>When we define the categories clearly—name the contradictions, articulate the choices, speak the costs—we give others the perceptual apparatus to see what they could not see before.</p>
@@ -586,8 +610,8 @@
                 <div class="page-number">11</div>
             </div>
             
-            <!-- PAGE 9: ESSAY CONCLUSION (LEFT) -->
-            <div class="left-page page-scroll" id="page9">
+            <!-- PAGE 5 LEFT: CONCLUSION -->
+            <div class="page left page-scroll" id="page5L">
                 <h2>The Synthesis</h2>
                 <div class="synthesis-highlight">
                     <p>We are conscious elements of a system in phase transition. Our observation matters not because we can be comprehensive, but because language creates the categories through which collective consciousness becomes possible.</p>
@@ -599,16 +623,16 @@
                 <div class="page-number">12</div>
             </div>
             
-            <!-- PAGE 10: BLANK (RIGHT) -->
-            <div class="right-page page-scroll" id="page10">
+            <!-- PAGE 5 RIGHT: INTEGRATION -->
+            <div class="page right page-scroll" id="page5R">
                 <div class="page-header">Synthesis Point</div>
                 <h2>Integration</h2>
                 <p style="color: rgba(232, 232, 232, 0.3); margin-top: 50px; text-align: center;">Where does this idea intersect with your understanding?</p>
                 <div class="page-number">13</div>
             </div>
             
-            <!-- PAGE 11: HEGELIAN CONCEPTS (LEFT) -->
-            <div class="left-page page-scroll" id="page11">
+            <!-- PAGE 6 LEFT: HEGELIAN CONCEPTS -->
+            <div class="page left page-scroll" id="page6L">
                 <div class="page-header">Reference</div>
                 <h2>Hegelian Concepts</h2>
                 
@@ -624,8 +648,8 @@
                 <div class="page-number">14</div>
             </div>
             
-            <!-- PAGE 12: PHYSICS CONCEPTS (RIGHT) -->
-            <div class="right-page page-scroll" id="page12">
+            <!-- PAGE 6 RIGHT: PHYSICS CONCEPTS -->
+            <div class="page right page-scroll" id="page6R">
                 <div class="page-header">Reference</div>
                 <h2>Physics Foundations</h2>
                 
@@ -644,11 +668,23 @@
                 <div class="page-number">15</div>
             </div>
             
-            <!-- PAGE 13: PHILOSOPHY SOURCES (LEFT) -->
-            <div class="left-page page-scroll" id="page13">
+            <!-- PAGE 7 LEFT: PHILOSOPHY SOURCES -->
+            <div class="page left page-scroll" id="page7L">
                 <div class="page-header">Sources</div>
                 <h2>Philosophical Texts</h2>
                 <p style="color: #a0aec0; font-size: 0.9em; margin-bottom: 25px;">Primary sources on Hegelian dialectics and synthesis</p>
+                
+                <div class="source-item">
+                    <div class="source-title">Phenomenology of Spirit</div>
+                    <div class="source-description">Georg Wilhelm Friedrich Hegel (1807). The foundational text for understanding dialectical movement and synthesis. Hegel traces consciousness through successive contradictions toward absolute knowledge.</div>
+                    <a href="https://www.gutenberg.org/ebooks/7734" target="_blank" class="source-link">📖 Read at Gutenberg</a>
+                </div>
+                
+                <div class="source-item">
+                    <div class="source-title">Science of Logic</div>
+                    <div class="source-description">Georg Wilhelm Friedrich Hegel. Presents Hegel's systematic logic of dialectical development, the theoretical foundation for thesis-antithesis-synthesis.</div>
+                    <a href="https://www.gutenberg.org/ebooks/search/?query=hegel+science+of+logic" target="_blank" class="source-link">📖 Search Gutenberg</a>
+                </div>
                 
                 <div class="source-item">
                     <div class="source-title">Encyclopedia of Philosophical Sciences</div>
@@ -659,8 +695,8 @@
                 <div class="page-number">16</div>
             </div>
             
-            <!-- PAGE 14: PHYSICS SOURCES (RIGHT) -->
-            <div class="right-page page-scroll" id="page14">
+            <!-- PAGE 7 RIGHT: PHYSICS SOURCES -->
+            <div class="page right page-scroll" id="page7R">
                 <div class="page-header">Sources</div>
                 <h2>Physics & Systems Theory</h2>
                 <p style="color: #a0aec0; font-size: 0.9em; margin-bottom: 25px;">Primary texts on quantum mechanics and phase transitions</p>
@@ -692,15 +728,15 @@
                 <div class="page-number">17</div>
             </div>
             
-            <!-- PAGE 15: INTEGRATIVE CONCEPTS (LEFT) -->
-            <div class="left-page page-scroll" id="page15">
+            <!-- PAGE 8 LEFT: INTEGRATIVE -->
+            <div class="page left page-scroll" id="page8L">
                 <div class="page-header">Reference</div>
                 <h2>Integrative Concepts</h2>
                 
                 <h3>Why Physics Metaphors Apply</h3>
                 <p>Complex systems—whether physical, biological, or social—often follow similar patterns. They have stable states, unstable equilibria, feedback loops, and phase transitions. When multiple contradictions couple, the system becomes hypersensitive, just like molecules at a critical point.</p>
                 
-                <h3>Collective vs Individual in Phase Transitions</h3>
+                <h3>Collective vs Individual</h3>
                 <p>In physical systems, molecules have no agency. But humans do. However, individual agency is often overwhelmed by system dynamics. During phase transitions, individual choice matters enormously—each person's decision ripples through interconnected systems. Yet individual action alone cannot prevent the transition; it requires coordinated collective recognition.</p>
                 
                 <h3>Language as System Architecture</h3>
@@ -709,8 +745,8 @@
                 <div class="page-number">18</div>
             </div>
             
-            <!-- PAGE 16: FURTHER READING (RIGHT) -->
-            <div class="right-page page-scroll" id="page16">
+            <!-- PAGE 8 RIGHT: FURTHER READING -->
+            <div class="page right page-scroll" id="page8R">
                 <div class="page-header">Resources</div>
                 <h2>Further Exploration</h2>
                 
@@ -718,16 +754,16 @@
                 <p><a href="https://plato.stanford.edu/entries/hegel/" target="_blank" class="source-link">Stanford Encyclopedia: Hegel</a></p>
                 <p><a href="https://www.britannica.com/topic/thesis-antithesis-synthesis" target="_blank" class="source-link">Britannica: Dialectics</a></p>
                 
-                <h3>Quantum Mechanics & Foundations</h3>
+                <h3>Quantum Mechanics</h3>
                 <p><a href="https://plato.stanford.edu/entries/qm-superposition/" target="_blank" class="source-link">Stanford: Superposition</a></p>
-                <p><a href="https://plato.stanford.edu/entries/qt-measurement/" target="_blank" class="source-link">Stanford: Measurement Problem</a></p>
+                <p><a href="https://plato.stanford.edu/entries/qt-measurement/" target="_blank" class="source-link">Stanford: Measurement</a></p>
                 
-                <h3>Complex Systems & Phase Transitions</h3>
+                <h3>Complex Systems</h3>
                 <p><a href="https://en.wikipedia.org/wiki/Complex_systems" target="_blank" class="source-link">Complex Systems Theory</a></p>
                 <p><a href="https://plato.stanford.edu/entries/symmetry-breaking/" target="_blank" class="source-link">Stanford: Symmetry Breaking</a></p>
                 
                 <h3>All Texts Repository</h3>
-                <p><a href="https://archive.org" target="_blank" class="source-link">📖 Archive.org (All Texts)</a></p>
+                <p><a href="https://archive.org" target="_blank" class="source-link">📖 Archive.org</a></p>
                 <p><a href="https://www.gutenberg.org" target="_blank" class="source-link">📖 Project Gutenberg</a></p>
                 
                 <div class="page-number">19</div>
@@ -735,88 +771,90 @@
         </div>
     </div>
     
-    <div class="nav-controls">
+    <div class="controls">
         <button class="nav-btn" id="prevBtn" onclick="previousPage()">← Previous</button>
-        <span class="page-counter"><span id="currentPage">1</span> / 16</span>
+        <span class="page-counter"><span id="currentPage">Cover</span></span>
         <button class="nav-btn" id="nextBtn" onclick="nextPage()">Next →</button>
     </div>
     
     <script>
-        let currentPage = 0;
+        let currentPageIndex = 0;
         const pageMap = {
             'coverPage': 0,
-            'page1': 1, 'page2': 2, 'page3': 3, 'page4': 4,
-            'page5': 5, 'page6': 6, 'page7': 7, 'page8': 8,
-            'page9': 9, 'page10': 10, 'page11': 11, 'page12': 12,
-            'page13': 13, 'page14': 14, 'page15': 15, 'page16': 16
+            'page1L': 1, 'page1R': 1,
+            'page2L': 2, 'page2R': 2,
+            'page3L': 3, 'page3R': 3,
+            'page4L': 4, 'page4R': 4,
+            'page5L': 5, 'page5R': 5,
+            'page6L': 6, 'page6R': 6,
+            'page7L': 7, 'page7R': 7,
+            'page8L': 8, 'page8R': 8
         };
-        const pages = Object.keys(pageMap);
+        const maxPages = 9;
         
-        function showPage(n) {
-            const allPages = document.querySelectorAll('.left-page, .right-page, .cover-page');
-            allPages.forEach(page => page.style.display = 'none');
+        function showPage(index) {
+            const allPages = document.querySelectorAll('.page, .cover-page');
+            allPages.forEach(page => page.classList.remove('active'));
             
-            if (n >= pages.length) currentPage = pages.length - 1;
-            if (n < 0) currentPage = 0;
+            if (index >= maxPages) currentPageIndex = maxPages - 1;
+            if (index < 0) currentPageIndex = 0;
             
-            const pageId = pages[currentPage];
-            document.getElementById(pageId).style.display = 'flex';
-            document.getElementById('currentPage').textContent = currentPage + 1;
+            // Show both left and right pages for the spread
+            if (currentPageIndex === 0) {
+                document.getElementById('coverPage').classList.add('active');
+                document.getElementById('currentPage').textContent = 'Cover';
+            } else {
+                const leftPageId = `page${currentPageIndex}L`;
+                const rightPageId = `page${currentPageIndex}R`;
+                document.getElementById(leftPageId).classList.add('active');
+                document.getElementById(rightPageId).classList.add('active');
+                document.getElementById('currentPage').textContent = `${currentPageIndex * 2 + 4}-${currentPageIndex * 2 + 5}`;
+            }
             
-            document.getElementById('prevBtn').disabled = currentPage === 0;
-            document.getElementById('nextBtn').disabled = currentPage === pages.length - 1;
+            document.getElementById('prevBtn').disabled = currentPageIndex === 0;
+            document.getElementById('nextBtn').disabled = currentPageIndex === maxPages - 1;
         }
         
         function nextPage() {
-            currentPage++;
-            showPage(currentPage);
+            currentPageIndex++;
+            showPage(currentPageIndex);
         }
         
         function previousPage() {
-            currentPage--;
-            showPage(currentPage);
+            currentPageIndex--;
+            showPage(currentPageIndex);
         }
         
-        function jumpTo(conceptId) {
+        function jumpTo(pageId) {
             const conceptMap = {
                 'superposition': 1,
                 'phase-boundary': 1,
-                'observation': 3,
-                'thesis': 11,
-                'antithesis': 11,
+                'observation': 2,
+                'thesis': 6,
+                'antithesis': 6,
                 'synthesis': 6,
-                'phase-transition': 7,
-                'page1': 1, 'page3': 3, 'page5': 5, 'page7': 7,
-                'page9': 9, 'page11': 11, 'page13': 13, 'page15': 15
+                'phase-transition': 4,
+                'page1L': 1, 'page2L': 2, 'page3L': 3, 'page4L': 4,
+                'page5L': 5, 'page6L': 6, 'page7L': 7, 'page8L': 8
             };
             
-            currentPage = conceptMap[conceptId] || 0;
-            showPage(currentPage);
+            currentPageIndex = conceptMap[pageId] || 0;
+            showPage(currentPageIndex);
+            
             setTimeout(() => {
-                const el = document.getElementById(conceptId);
-                if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                const el = document.getElementById(pageId);
+                if (el && pageId.includes('L')) {
+                    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
             }, 100);
         }
         
-        // Initialize
         showPage(0);
         
-        // Keyboard navigation
         document.addEventListener('keydown', (e) => {
             if (e.key === 'ArrowRight') nextPage();
             if (e.key === 'ArrowLeft') previousPage();
         });
     </script>
 </body>
-</html>    <div class="source-title">Phenomenology of Spirit</div>
-                    <div class="source-description">Georg Wilhelm Friedrich Hegel (1807). The foundational text for understanding dialectical movement and synthesis. Hegel traces consciousness through successive contradictions toward absolute knowledge.</div>
-                    <a href="https://www.gutenberg.org/ebooks/7734" target="_blank" class="source-link">📖 Read at Project Gutenberg</a>
-                </div>
-                
-                <div class="source-item">
-                    <div class="source-title">Science of Logic</div>
-                    <div class="source-description">Georg Wilhelm Friedrich Hegel. Presents Hegel's systematic logic of dialectical development, the theoretical foundation for thesis-antithesis-synthesis.</div>
-                    <a href="https://www.gutenberg.org/ebooks/search/?query=hegel+science+of+logic" target="_blank" class="source-link">📖 Search Gutenberg</a>
-                </div>
-                
-                <div class="source-item">
+</html>
